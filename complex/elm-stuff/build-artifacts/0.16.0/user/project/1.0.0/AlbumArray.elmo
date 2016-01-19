@@ -1,0 +1,60 @@
+Elm.AlbumArray = Elm.AlbumArray || {};
+Elm.AlbumArray.make = function (_elm) {
+   "use strict";
+   _elm.AlbumArray = _elm.AlbumArray || {};
+   if (_elm.AlbumArray.values) return _elm.AlbumArray.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Album = Elm.Album.make(_elm),
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var updateEntry = F2(function (album,action) {
+      var _p0 = album;
+      if (_p0.ctor === "Nothing") {
+            return $Maybe.Nothing;
+         } else {
+            return $Maybe.Just(A2($Album.update,action,_p0._0));
+         }
+   });
+   var Clicked = F2(function (a,b) {    return {ctor: "Clicked",_0: a,_1: b};});
+   var viewAlbum = F2(function (address,_p1) {    var _p2 = _p1;return A2($Album.view,A2($Signal.forwardTo,address,Clicked(_p2._0)),_p2._1);});
+   var view = F2(function (address,model) {
+      var albums = $Array.toIndexedList(model);
+      var albums$ = A2($List.map,function (_p3) {    var _p4 = _p3;return A2(viewAlbum,address,{ctor: "_Tuple2",_0: _p4._0,_1: _p4._1});},albums);
+      return A2($Html.ul,_U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "margin",_1: "0px"}]))]),albums$);
+   });
+   var resetAll = function (model) {    return A2($Array.map,$Album.reset,model);};
+   var update = F2(function (_p5,model) {
+      var _p6 = _p5;
+      var _p8 = _p6._0;
+      var album$ = A2(updateEntry,A2($Array.get,_p8,model),_p6._1);
+      var albums$ = resetAll(model);
+      var _p7 = album$;
+      if (_p7.ctor === "Nothing") {
+            return A2($Debug.log,"update: ",albums$);
+         } else {
+            return A2($Debug.log,"update: ",A3($Array.set,_p8,_p7._0,albums$));
+         }
+   });
+   var init = function (strings) {    return A3($Debug.log,"init: ",$Array.fromList,A2($List.map,$Album.init,$List.sort(strings)));};
+   var examples = init(_U.list(["Red Rice","Back in Black","In the Garden Green"]));
+   var main = $StartApp$Simple.start({model: examples,update: update,view: view});
+   return _elm.AlbumArray.values = {_op: _op
+                                   ,init: init
+                                   ,resetAll: resetAll
+                                   ,Clicked: Clicked
+                                   ,updateEntry: updateEntry
+                                   ,update: update
+                                   ,view: view
+                                   ,viewAlbum: viewAlbum
+                                   ,examples: examples
+                                   ,main: main};
+};

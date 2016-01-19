@@ -1,0 +1,41 @@
+Elm.B2 = Elm.B2 || {};
+Elm.B2.make = function (_elm) {
+   "use strict";
+   _elm.B2 = _elm.B2 || {};
+   if (_elm.B2.values) return _elm.B2.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $B2Model = Elm.B2Model.make(_elm),
+   $B2View = Elm.B2View.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Regex = Elm.Regex.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var emily = A2($B2Model.initArtist,"Peking Bros",_U.list(["Foo","Bar","Baz"]));
+   var hazel = A2($B2Model.initArtist,"Askew Sisters",_U.list(["Red","Rice","Green"]));
+   var initialState = {artists: _U.list([hazel,emily]),selected: $Maybe.Nothing,expanded: $Maybe.Nothing,search: $B2Model.Empty};
+   var search = F2(function (model,string) {
+      var r = $Regex.caseInsensitive($Regex.regex($Regex.escape(string)));
+      var helper = function (artist) {    return A2($Regex.contains,r,artist.name);};
+      var artists$ = A2($List.filter,helper,model.artists);
+      var searchResult = $List.isEmpty(artists$) ? $B2Model.NoSuch(string) : $B2Model.Found(string);
+      return _U.update(model,{artists: artists$,search: searchResult});
+   });
+   var toggle = F2(function (a,b) {    return _U.eq(a,$Maybe.Just(b)) ? $Maybe.Nothing : $Maybe.Just(b);});
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      switch (_p0.ctor)
+      {case "Expand": return _U.update(model,{expanded: A2(toggle,model.expanded,_p0._0)});
+         case "Play": return _U.update(model,{selected: A2(toggle,model.selected,_p0._0)});
+         case "Find": var _p1 = _p0._0;
+           return _U.eq("",_p1) ? initialState : A2(search,model,_p1);
+         case "Stop": return _U.update(model,{selected: $Maybe.Nothing});
+         default: return initialState;}
+   });
+   var main = $StartApp$Simple.start({model: initialState,view: $B2View.view,update: update});
+   return _elm.B2.values = {_op: _op,toggle: toggle,search: search,update: update,main: main,hazel: hazel,emily: emily,initialState: initialState};
+};

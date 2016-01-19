@@ -1,0 +1,37 @@
+Elm.B2Model = Elm.B2Model || {};
+Elm.B2Model.make = function (_elm) {
+   "use strict";
+   _elm.B2Model = _elm.B2Model || {};
+   if (_elm.B2Model.values) return _elm.B2Model.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var Reset = {ctor: "Reset"};
+   var Stop = {ctor: "Stop"};
+   var Find = function (a) {    return {ctor: "Find",_0: a};};
+   var Play = function (a) {    return {ctor: "Play",_0: a};};
+   var Expand = function (a) {    return {ctor: "Expand",_0: a};};
+   var Model = F4(function (a,b,c,d) {    return {artists: a,expanded: b,selected: c,search: d};});
+   var Empty = {ctor: "Empty"};
+   var NoSuch = function (a) {    return {ctor: "NoSuch",_0: a};};
+   var Found = function (a) {    return {ctor: "Found",_0: a};};
+   var initArtist = F2(function (name,titles) {    return {name: name,albums: titles};});
+   var Artist = F2(function (a,b) {    return {name: a,albums: b};});
+   return _elm.B2Model.values = {_op: _op
+                                ,Artist: Artist
+                                ,initArtist: initArtist
+                                ,Found: Found
+                                ,NoSuch: NoSuch
+                                ,Empty: Empty
+                                ,Model: Model
+                                ,Expand: Expand
+                                ,Play: Play
+                                ,Find: Find
+                                ,Stop: Stop
+                                ,Reset: Reset};
+};

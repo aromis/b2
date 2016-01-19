@@ -1,0 +1,129 @@
+Elm.B2 = Elm.B2 || {};
+Elm.B2.make = function (_elm) {
+   "use strict";
+   _elm.B2 = _elm.B2 || {};
+   if (_elm.B2.values) return _elm.B2.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Regex = Elm.Regex.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm),
+   $String = Elm.String.make(_elm);
+   var _op = {};
+   var swap = F2(function (a,b) {    return _U.eq(a,$Maybe.Just(b)) ? $Maybe.Nothing : $Maybe.Just(b);});
+   var Reset = {ctor: "Reset"};
+   var resetButton = function (address) {
+      return _U.list([A2($Html.button,
+      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "margin-left",_1: "2px"}])),A2($Html$Events.onClick,address,Reset)]),
+      _U.list([$Html.text("Reset")]))]);
+   };
+   var Find = function (a) {    return {ctor: "Find",_0: a};};
+   var Play = function (a) {    return {ctor: "Play",_0: a};};
+   var viewAlbums = F3(function (address,model,artist) {
+      var highlight = function (album) {
+         var _p0 = model.selected;
+         if (_p0.ctor === "Nothing") {
+               return _U.list([]);
+            } else {
+               return _U.eq(_p0._0,album) ? _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "font-weight",_1: "bold"}]))]) : _U.list([]);
+            }
+      };
+      var viewAlbum = F2(function (address,album) {
+         return A2($Html.li,highlight(album),_U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,Play(album))]),_U.list([$Html.text(album)]))]));
+      });
+      var _p1 = model.expanded;
+      if (_p1.ctor === "Nothing") {
+            return _U.list([]);
+         } else {
+            return _U.eq(_p1._0.name,artist.name) ? _U.list([A2($Html.ul,_U.list([]),A2($List.map,viewAlbum(address),artist.albums))]) : _U.list([]);
+         }
+   });
+   var Expand = function (a) {    return {ctor: "Expand",_0: a};};
+   var viewArtist = F3(function (address,model,artist) {
+      var albumList = A3(viewAlbums,address,model,artist);
+      return A2($Html.ul,
+      _U.list([]),
+      A2($List._op["::"],
+      A2($Html.li,_U.list([]),_U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,Expand(artist))]),_U.list([$Html.text(artist.name)]))])),
+      albumList));
+   });
+   var Model = F4(function (a,b,c,d) {    return {artists: a,expanded: b,selected: c,search: d};});
+   var searchString = function (search) {    var _p2 = search;switch (_p2.ctor) {case "Found": return _p2._0;case "NoSuch": return _p2._0;default: return "";}};
+   var searchBox = F2(function (address,search) {
+      var bg = function () {
+         var _p3 = search;
+         switch (_p3.ctor)
+         {case "Found": return "#90EE90";
+            case "NoSuch": return "#CD5C5C";
+            default: return "#E0FFFF";}
+      }();
+      return _U.list([A2($Html.input,
+      _U.list([$Html$Attributes.placeholder("Find")
+              ,$Html$Attributes.value(searchString(search))
+              ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "background",_1: bg}]))
+              ,A3($Html$Events.on,"input",$Html$Events.targetValue,function (str) {    return A2($Signal.message,address,Find(str));})]),
+      _U.list([]))]);
+   });
+   var view = F2(function (address,model) {
+      var artists = A2($List.map,A2(viewArtist,address,model),model.artists);
+      return A2($Html.div,
+      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "margin-left",_1: "2em"}]))]),
+      A2($Basics._op["++"],A2(searchBox,address,model.search),A2($Basics._op["++"],resetButton(address),artists)));
+   });
+   var Empty = {ctor: "Empty"};
+   var NoSuch = function (a) {    return {ctor: "NoSuch",_0: a};};
+   var Found = function (a) {    return {ctor: "Found",_0: a};};
+   var search = F2(function (model,string) {
+      var r = $Regex.caseInsensitive($Regex.regex($Regex.escape(string)));
+      var helper = function (artist) {    return A2($Regex.contains,r,artist.name);};
+      var artists$ = A2($List.filter,helper,model.artists);
+      var searchResult = $List.isEmpty(artists$) ? NoSuch(string) : Found(string);
+      return _U.update(model,{artists: artists$,search: searchResult});
+   });
+   var initArtist = F2(function (name,titles) {    return {name: name,albums: titles};});
+   var hazel = A2(initArtist,"Askew Sisters",_U.list(["Red","Rice","Green"]));
+   var emily = A2(initArtist,"Peking Bros",_U.list(["Foo","Bar","Baz"]));
+   var initialState = {artists: _U.list([hazel,emily]),selected: $Maybe.Nothing,expanded: $Maybe.Nothing,search: Empty};
+   var update = F2(function (action,model) {
+      var _p4 = action;
+      switch (_p4.ctor)
+      {case "Expand": return _U.update(model,{expanded: A2(swap,model.expanded,_p4._0)});
+         case "Play": return _U.update(model,{selected: A2(swap,model.selected,_p4._0)});
+         case "Find": var _p5 = _p4._0;
+           return $String.isEmpty(_p5) ? initialState : A2(search,model,_p5);
+         default: return initialState;}
+   });
+   var main = $StartApp$Simple.start({model: initialState,view: view,update: update});
+   var Artist = F2(function (a,b) {    return {name: a,albums: b};});
+   return _elm.B2.values = {_op: _op
+                           ,Artist: Artist
+                           ,initArtist: initArtist
+                           ,Found: Found
+                           ,NoSuch: NoSuch
+                           ,Empty: Empty
+                           ,searchString: searchString
+                           ,Model: Model
+                           ,Expand: Expand
+                           ,Play: Play
+                           ,Find: Find
+                           ,Reset: Reset
+                           ,swap: swap
+                           ,search: search
+                           ,update: update
+                           ,resetButton: resetButton
+                           ,searchBox: searchBox
+                           ,view: view
+                           ,viewArtist: viewArtist
+                           ,viewAlbums: viewAlbums
+                           ,main: main
+                           ,hazel: hazel
+                           ,emily: emily
+                           ,initialState: initialState};
+};

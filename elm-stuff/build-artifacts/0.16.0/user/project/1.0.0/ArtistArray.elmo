@@ -1,0 +1,88 @@
+Elm.ArtistArray = Elm.ArtistArray || {};
+Elm.ArtistArray.make = function (_elm) {
+   "use strict";
+   _elm.ArtistArray = _elm.ArtistArray || {};
+   if (_elm.ArtistArray.values) return _elm.ArtistArray.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      switch (_p0.ctor)
+      {case "Expand": var _p1 = _p0._0;
+           var artist$ = _U.update(_p1,{expanded: $Basics.not(_p1.expanded)});
+           return A2($Debug.log,"model:",_U.update(model,{expanded: $Maybe.Just(artist$)}));
+         case "Play": var _p2 = _p0._0;
+           var album$ = _U.update(_p2,{bold: $Basics.not(_p2.bold)});
+           return _U.update(model,{selected: $Maybe.Just(album$)});
+         default: return _U.update(model,{selected: $Maybe.Nothing,expanded: $Maybe.Nothing});}
+   });
+   var Reset = {ctor: "Reset"};
+   var Play = function (a) {    return {ctor: "Play",_0: a};};
+   var viewAlbum = F2(function (address,album) {
+      return A2($Html.li,_U.list([]),_U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,Play(album))]),_U.list([$Html.text(album.name)]))]));
+   });
+   var viewAlbums = F3(function (address,model,artist) {
+      var _p3 = model.expanded;
+      if (_p3.ctor === "Nothing") {
+            return _U.list([]);
+         } else {
+            return _U.eq(_p3._0.name,artist.name) ? _U.list([A2($Html.ul,_U.list([]),A2($List.map,viewAlbum(address),artist.albums))]) : _U.list([]);
+         }
+   });
+   var Expand = function (a) {    return {ctor: "Expand",_0: a};};
+   var viewArtist = F3(function (address,model,artist) {
+      var albumList = A3(viewAlbums,address,model,artist);
+      return A2($Html.ul,
+      _U.list([]),
+      A2($List._op["::"],
+      A2($Html.li,
+      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "text-indent",_1: "2em"}]))]),
+      _U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,Expand(artist))]),_U.list([$Html.text(artist.name)]))])),
+      albumList));
+   });
+   var view = F2(function (address,model) {
+      var artists = A2($List.map,A2(viewArtist,address,model),model.artists);
+      return A2($Html.div,_U.list([]),artists);
+   });
+   var Model = F3(function (a,b,c) {    return {artists: a,expanded: b,selected: c};});
+   var Artist = F3(function (a,b,c) {    return {name: a,albums: b,expanded: c};});
+   var highlight = function (album) {
+      return album.bold ? _U.list([{ctor: "_Tuple2",_0: "font-weight",_1: "bold"}]) : _U.list([{ctor: "_Tuple2",_0: "font-weight",_1: "normal"}]);
+   };
+   var initAlbum = function (name) {    return {name: name,bold: false};};
+   var initArtist = F2(function (name,titles) {    return {name: name,albums: A2($List.map,initAlbum,titles),expanded: false};});
+   var hazel = A2(initArtist,"Askew Sisters",_U.list(["Red","Rice","Green"]));
+   var emily = A2(initArtist,"Peking Bros",_U.list(["Foo","Bar","Baz"]));
+   var example = {artists: _U.list([hazel,emily]),selected: $Maybe.Nothing,expanded: $Maybe.Nothing};
+   var main = $StartApp$Simple.start({model: example,view: view,update: update});
+   var Album = F2(function (a,b) {    return {name: a,bold: b};});
+   return _elm.ArtistArray.values = {_op: _op
+                                    ,Album: Album
+                                    ,initAlbum: initAlbum
+                                    ,highlight: highlight
+                                    ,Artist: Artist
+                                    ,initArtist: initArtist
+                                    ,Model: Model
+                                    ,Expand: Expand
+                                    ,Play: Play
+                                    ,Reset: Reset
+                                    ,update: update
+                                    ,view: view
+                                    ,viewArtist: viewArtist
+                                    ,viewAlbums: viewAlbums
+                                    ,viewAlbum: viewAlbum
+                                    ,main: main
+                                    ,hazel: hazel
+                                    ,emily: emily
+                                    ,example: example};
+};

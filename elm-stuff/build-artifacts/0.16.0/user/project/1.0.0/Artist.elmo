@@ -1,0 +1,78 @@
+Elm.Artist = Elm.Artist || {};
+Elm.Artist.make = function (_elm) {
+   "use strict";
+   _elm.Artist = _elm.Artist || {};
+   if (_elm.Artist.values) return _elm.Artist.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $AlbumArray = Elm.AlbumArray.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var Play = function (a) {    return {ctor: "Play",_0: a};};
+   var Expand = {ctor: "Expand"};
+   var viewInContext = F2(function (context,model) {
+      var clickable = function (name) {
+         return A2($Html.li,_U.list([]),_U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,context.artist,Expand)]),_U.list([$Html.text(name)]))]));
+      };
+      var view = function () {
+         var _p0 = model.detail;
+         if (_p0.ctor === "Short") {
+               return A2($Html.div,_U.list([]),_U.list([clickable(model.artist)]));
+            } else {
+               return A2($Html.div,
+               _U.list([]),
+               _U.list([clickable(model.artist)
+                       ,A2($Html.span,
+                       _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "text-indent",_1: "2em"}]))]),
+                       _U.list([A2($AlbumArray.view,A2($Signal.forwardTo,context.albums,Play),model.albums)]))]));
+            }
+      }();
+      return A2($Html.div,_U.list([]),_U.list([view]));
+   });
+   var view = F2(function (address,model) {    var context = {artist: address,albums: address};return A2(viewInContext,context,model);});
+   var resetAlbums = function (model) {    return _U.update(model,{albums: $AlbumArray.resetAll(model.albums)});};
+   var Context = F2(function (a,b) {    return {artist: a,albums: b};});
+   var Model = F3(function (a,b,c) {    return {artist: a,albums: b,detail: c};});
+   var Full = {ctor: "Full"};
+   var Short = {ctor: "Short"};
+   var init = F2(function (name,titles) {    return {artist: name,albums: $AlbumArray.init(titles),detail: Short};});
+   var example = A2(init,"Askew Sisters",_U.list(["One","Two"]));
+   var reset = function (model) {    return _U.update(model,{detail: Short});};
+   var update = F2(function (action,model) {
+      var _p1 = action;
+      if (_p1.ctor === "Expand") {
+            var _p2 = model.detail;
+            if (_p2.ctor === "Short") {
+                  return _U.update(model,{detail: Full});
+               } else {
+                  return _U.update(model,{detail: Short});
+               }
+         } else {
+            return _U.update(model,{albums: A2($AlbumArray.update,_p1._0,model.albums)});
+         }
+   });
+   var main = $StartApp$Simple.start({model: example,update: update,view: view});
+   return _elm.Artist.values = {_op: _op
+                               ,Short: Short
+                               ,Full: Full
+                               ,Model: Model
+                               ,Context: Context
+                               ,init: init
+                               ,reset: reset
+                               ,resetAlbums: resetAlbums
+                               ,Expand: Expand
+                               ,Play: Play
+                               ,update: update
+                               ,view: view
+                               ,viewInContext: viewInContext
+                               ,example: example
+                               ,main: main};
+};

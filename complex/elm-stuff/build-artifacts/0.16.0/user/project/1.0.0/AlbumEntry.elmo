@@ -1,0 +1,28 @@
+Elm.AlbumEntry = Elm.AlbumEntry || {};
+Elm.AlbumEntry.make = function (_elm) {
+   "use strict";
+   _elm.AlbumEntry = _elm.AlbumEntry || {};
+   if (_elm.AlbumEntry.values) return _elm.AlbumEntry.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var update = F2(function (action,album) {    return album;});
+   var NooP = {ctor: "NooP"};
+   var view = F2(function (address,album) {
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([A2($Html.li,_U.list([]),_U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,NooP)]),_U.list([$Html.text(album.name)]))]))]));
+   });
+   var init = function (name) {    return {name: name};};
+   var Album = function (a) {    return {name: a};};
+   var main = $StartApp$Simple.start({model: init("Highway to Hell"),update: update,view: view});
+   return _elm.AlbumEntry.values = {_op: _op,main: main,Album: Album,init: init,NooP: NooP,update: update,view: view};
+};

@@ -1,0 +1,85 @@
+Elm.B2View = Elm.B2View || {};
+Elm.B2View.make = function (_elm) {
+   "use strict";
+   _elm.B2View = _elm.B2View || {};
+   if (_elm.B2View.values) return _elm.B2View.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $B2Model = Elm.B2Model.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var viewAlbums = F3(function (address,model,artist) {
+      var highlight = function (album) {
+         var _p0 = model.selected;
+         if (_p0.ctor === "Nothing") {
+               return _U.list([]);
+            } else {
+               return _U.eq(_p0._0,album) ? _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "font-weight",_1: "bold"}]))]) : _U.list([]);
+            }
+      };
+      var viewAlbum = F2(function (address,album) {
+         return A2($Html.li,
+         highlight(album),
+         _U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,$B2Model.Play(album))]),_U.list([$Html.text(album)]))]));
+      });
+      var _p1 = model.expanded;
+      if (_p1.ctor === "Nothing") {
+            return _U.list([]);
+         } else {
+            return _U.eq(_p1._0.name,artist.name) ? _U.list([A2($Html.ul,_U.list([]),A2($List.map,viewAlbum(address),artist.albums))]) : _U.list([]);
+         }
+   });
+   var viewArtist = F3(function (address,model,artist) {
+      var albumList = A3(viewAlbums,address,model,artist);
+      return A2($Html.ul,
+      _U.list([]),
+      A2($List._op["::"],
+      A2($Html.li,_U.list([]),_U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,$B2Model.Expand(artist))]),_U.list([$Html.text(artist.name)]))])),
+      albumList));
+   });
+   var searchString = function (search) {    var _p2 = search;switch (_p2.ctor) {case "Found": return _p2._0;case "NoSuch": return _p2._0;default: return "";}};
+   var searchBox = F2(function (address,search) {
+      var bg = function () {
+         var _p3 = search;
+         switch (_p3.ctor)
+         {case "Found": return "#90EE90";
+            case "NoSuch": return "#CD5C5C";
+            default: return "#E0FFFF";}
+      }();
+      return _U.list([A2($Html.input,
+      _U.list([$Html$Attributes.placeholder("Find")
+              ,$Html$Attributes.value(searchString(search))
+              ,$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "background",_1: bg}]))
+              ,A3($Html$Events.on,"input",$Html$Events.targetValue,function (str) {    return A2($Signal.message,address,$B2Model.Find(str));})]),
+      _U.list([]))]);
+   });
+   var newButton = F3(function (address,action,label) {
+      return _U.list([A2($Html.button,
+      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "margin-left",_1: "2px"}])),A2($Html$Events.onClick,address,action)]),
+      _U.list([$Html.text(label)]))]);
+   });
+   var resetButton = function (address) {    return A3(newButton,address,$B2Model.Reset,"Reset");};
+   var stopButton = function (address) {    return A3(newButton,address,$B2Model.Stop,"Stop");};
+   var view = F2(function (address,model) {
+      var artists = A2($List.map,A2(viewArtist,address,model),model.artists);
+      return A2($Html.div,
+      _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "margin-left",_1: "2em"}]))]),
+      A2($Basics._op["++"],A2(searchBox,address,model.search),A2($Basics._op["++"],resetButton(address),A2($Basics._op["++"],stopButton(address),artists))));
+   });
+   return _elm.B2View.values = {_op: _op
+                               ,newButton: newButton
+                               ,resetButton: resetButton
+                               ,stopButton: stopButton
+                               ,searchString: searchString
+                               ,searchBox: searchBox
+                               ,view: view
+                               ,viewArtist: viewArtist
+                               ,viewAlbums: viewAlbums};
+};

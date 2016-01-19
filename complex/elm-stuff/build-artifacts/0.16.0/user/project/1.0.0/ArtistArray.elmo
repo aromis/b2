@@ -1,0 +1,64 @@
+Elm.ArtistArray = Elm.ArtistArray || {};
+Elm.ArtistArray.make = function (_elm) {
+   "use strict";
+   _elm.ArtistArray = _elm.ArtistArray || {};
+   if (_elm.ArtistArray.values) return _elm.ArtistArray.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Array = Elm.Array.make(_elm),
+   $Artist = Elm.Artist.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var update = F2(function (_p0,model) {
+      var _p1 = _p0;
+      var _p4 = _p1._0;
+      var artists$ = model.artists;
+      var artist = A2($Array.get,_p4,artists$);
+      var artist$ = function () {
+         var _p2 = artist;
+         if (_p2.ctor === "Nothing") {
+               return $Maybe.Nothing;
+            } else {
+               return $Maybe.Just(A2($Artist.update,_p1._1,_p2._0));
+            }
+      }();
+      var _p3 = artist$;
+      if (_p3.ctor === "Nothing") {
+            return model;
+         } else {
+            return _U.update(model,{artists: A3($Array.set,_p4,_p3._0,artists$)});
+         }
+   });
+   var Clicked = F2(function (a,b) {    return {ctor: "Clicked",_0: a,_1: b};});
+   var viewArtist = F2(function (address,_p5) {    var _p6 = _p5;return A2($Artist.view,A2($Signal.forwardTo,address,Clicked(_p6._0)),_p6._1);});
+   var view = F2(function (address,model) {
+      var artists = $Array.toIndexedList(model.artists);
+      var artists$ = A2($List.map,function (_p7) {    var _p8 = _p7;return A2(viewArtist,address,{ctor: "_Tuple2",_0: _p8._0,_1: _p8._1});},artists);
+      return A2($Html.ul,_U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "margin",_1: "0px"}]))]),artists$);
+   });
+   var resetArtist = function (a) {    return $Artist.reset(a);};
+   var init = function (details) {
+      return {artists: $Array.fromList(A2($List.map,function (a) {    return A2($Artist.init,a.artist,a.titles);},details)),selected: $Maybe.Nothing};
+   };
+   var examples = init(_U.list([{artist: "Askew Sisters",titles: _U.list(["Red Rice","Back in Black"])}
+                               ,{artist: "Peking Bros",titles: _U.list(["In the Garden Green"])}]));
+   var main = $StartApp$Simple.start({model: examples,update: update,view: view});
+   var Model = F2(function (a,b) {    return {artists: a,selected: b};});
+   return _elm.ArtistArray.values = {_op: _op
+                                    ,Model: Model
+                                    ,init: init
+                                    ,resetArtist: resetArtist
+                                    ,Clicked: Clicked
+                                    ,update: update
+                                    ,view: view
+                                    ,viewArtist: viewArtist
+                                    ,examples: examples
+                                    ,main: main};
+};

@@ -1,0 +1,33 @@
+Elm.Album = Elm.Album || {};
+Elm.Album.make = function (_elm) {
+   "use strict";
+   _elm.Album = _elm.Album || {};
+   if (_elm.Album.values) return _elm.Album.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var update = F2(function (action,album) {    return A2($Debug.log,"album update: ",_U.update(album,{bold: $Basics.not(album.bold)}));});
+   var Clicked = {ctor: "Clicked"};
+   var reset = function (album) {    return _U.update(album,{bold: false});};
+   var highlight = function (album) {
+      return album.bold ? _U.list([{ctor: "_Tuple2",_0: "font-weight",_1: "bold"}]) : _U.list([{ctor: "_Tuple2",_0: "font-weight",_1: "normal"}]);
+   };
+   var view = F2(function (address,album) {
+      return A2($Html.li,
+      _U.list([$Html$Attributes.style(highlight(album))]),
+      _U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,Clicked)]),_U.list([$Html.text(album.name)]))]));
+   });
+   var init = function (name) {    return {name: name,bold: false};};
+   var Model = F2(function (a,b) {    return {name: a,bold: b};});
+   var main = $StartApp$Simple.start({model: init("Highway to Hell"),update: update,view: view});
+   return _elm.Album.values = {_op: _op,main: main,Model: Model,init: init,highlight: highlight,reset: reset,Clicked: Clicked,update: update,view: view};
+};

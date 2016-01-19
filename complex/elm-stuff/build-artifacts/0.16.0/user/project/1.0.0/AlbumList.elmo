@@ -1,0 +1,74 @@
+Elm.AlbumList = Elm.AlbumList || {};
+Elm.AlbumList.make = function (_elm) {
+   "use strict";
+   _elm.AlbumList = _elm.AlbumList || {};
+   if (_elm.AlbumList.values) return _elm.AlbumList.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Album = Elm.Album.make(_elm),
+   $Array = Elm.Array.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var updateEntry = F2(function (album,action) {
+      var _p0 = album;
+      if (_p0.ctor === "Nothing") {
+            return $Maybe.Nothing;
+         } else {
+            return $Maybe.Just(A2($Album.update,action,_p0._0));
+         }
+   });
+   var update = F2(function (action,model) {
+      var albums$ = A2($Array.map,$Album.reset,model.albums);
+      var _p1 = action;
+      if (_p1.ctor === "Reset") {
+            return A2($Debug.log,"update: ",_U.update(model,{selected: $Maybe.Nothing,albums: albums$}));
+         } else {
+            var _p3 = _p1._0;
+            var album = A2($Array.get,_p3,model.albums);
+            var album$ = A2(updateEntry,album,_p1._1);
+            var _p2 = album$;
+            if (_p2.ctor === "Nothing") {
+                  return A2($Debug.log,"update: ",_U.update(model,{selected: $Maybe.Nothing,albums: albums$}));
+               } else {
+                  return A2($Debug.log,"update: ",_U.update(model,{selected: album$,albums: A3($Array.set,_p3,_p2._0,albums$)}));
+               }
+         }
+   });
+   var Reset = {ctor: "Reset"};
+   var Clicked = F2(function (a,b) {    return {ctor: "Clicked",_0: a,_1: b};});
+   var viewAlbum = F2(function (address,_p4) {    var _p5 = _p4;return A2($Album.view,A2($Signal.forwardTo,address,Clicked(_p5._0)),_p5._1);});
+   var view = F2(function (address,model) {
+      var albums = $Array.toIndexedList(model.albums);
+      var albums$ = A2($List.map,function (_p6) {    var _p7 = _p6;return A2(viewAlbum,address,{ctor: "_Tuple2",_0: _p7._0,_1: _p7._1});},albums);
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([A2($Html.div,
+              _U.list([]),
+              _U.list([A2($Html.ul,_U.list([]),A2($List.map,function (a) {    return A2($Html.li,_U.list([]),_U.list([a]));},albums$))]))
+              ,A2($Html.div,_U.list([]),_U.list([A2($Html.button,_U.list([A2($Html$Events.onClick,address,Reset)]),_U.list([$Html.text("Reset")]))]))]));
+   });
+   var init = function (strings) {
+      return A2($Debug.log,"init: ",{albums: $Array.fromList(A2($List.map,$Album.init,$List.sort(strings))),selected: $Maybe.Nothing});
+   };
+   var examples = init(_U.list(["Red Rice","Back in Black","In the Garden Green"]));
+   var main = $StartApp$Simple.start({model: examples,update: update,view: view});
+   var Model = F2(function (a,b) {    return {albums: a,selected: b};});
+   return _elm.AlbumList.values = {_op: _op
+                                  ,Model: Model
+                                  ,init: init
+                                  ,Clicked: Clicked
+                                  ,Reset: Reset
+                                  ,updateEntry: updateEntry
+                                  ,update: update
+                                  ,view: view
+                                  ,viewAlbum: viewAlbum
+                                  ,examples: examples
+                                  ,main: main};
+};

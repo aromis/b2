@@ -1,0 +1,53 @@
+Elm.ArtistEntry = Elm.ArtistEntry || {};
+Elm.ArtistEntry.make = function (_elm) {
+   "use strict";
+   _elm.ArtistEntry = _elm.ArtistEntry || {};
+   if (_elm.ArtistEntry.values) return _elm.ArtistEntry.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $AlbumEntry = Elm.AlbumEntry.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
+   var _op = {};
+   var Change = {ctor: "Change"};
+   var view = F2(function (address,artist) {
+      var clickable = function (artist) {
+         return A2($Html.li,_U.list([]),_U.list([A2($Html.a,_U.list([A2($Html$Events.onClick,address,Change)]),_U.list([$Html.text(artist.name)]))]));
+      };
+      var view = function () {
+         var _p0 = artist.detail;
+         if (_p0.ctor === "Short") {
+               return A2($Html.div,_U.list([]),_U.list([clickable(artist)]));
+            } else {
+               return A2($Html.div,
+               _U.list([]),
+               _U.list([clickable(artist)
+                       ,A2($Html.div,
+                       _U.list([$Html$Attributes.style(_U.list([{ctor: "_Tuple2",_0: "text-indent",_1: "2em"}]))]),
+                       A2($List.map,function (a) {    return A2($Html.li,_U.list([]),_U.list([$Html.text(a)]));},artist.albums))]));
+            }
+      }();
+      return A2($Html.div,_U.list([]),_U.list([view]));
+   });
+   var Artist = F3(function (a,b,c) {    return {name: a,albums: b,detail: c};});
+   var Full = {ctor: "Full"};
+   var Short = {ctor: "Short"};
+   var example = {name: "Askew Sisters",albums: _U.list(["One","Two"]),detail: Short};
+   var update = F2(function (action,artist) {
+      var _p1 = artist.detail;
+      if (_p1.ctor === "Short") {
+            return _U.update(artist,{detail: Full});
+         } else {
+            return _U.update(artist,{detail: Short});
+         }
+   });
+   var main = $StartApp$Simple.start({model: example,update: update,view: view});
+   return _elm.ArtistEntry.values = {_op: _op,main: main,Short: Short,Full: Full,Artist: Artist,example: example,Change: Change,update: update,view: view};
+};
